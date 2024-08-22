@@ -22,7 +22,7 @@ Este paquete es una colección de funcionalidades, que por ahora permitirá, a t
   | WebApiConfig       // Clase principal que crea y asigna las extensiones.
 ```
 
-## ¿Cómo adicionar el paquete al proyecto y usarlo?
+## ¿Cómo adiciono el paquete al proyecto para usarlo?
 Abrimos una Terminal en nuestro ambiente de desarrollo de Visual Studio, y nos ubicamos en el directorio donde se encuentra el archivo del proyecto '*.csproj', y allí ejecutamos el siguiente comando:
 
 ```
@@ -48,20 +48,21 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddMongoDbExtensions<T>()` tiene varios parámetros, pero todos con valores por defecto, y son los siguientes:
-> - addServiceHealthCheck: De tipo `bool`, y nos sirve para indicar si se desea crear/asignar el HealthCheck para el Servicio base (Por defecto está en TRUE).
-> - addMongoDbHealthCheck: De tipo `bool`, y nos sirve para indicar se se desea crear/asignar el HealthCheck para la BD de MongoDB (Por defecto está en TRUE).
-> - mongoDbHealthCheckTimeout: De tipo `double`, y nos sirve para configurar el tiempo de espera para la respuesta del HealthCheck de MongoDB (Por defecto está en 3 segundos).
-> - configSectionName: De tipo `string`, y lo utilizaremos para indicar el nombre de tiene la sección en el archivo de configuración "appsettings.json", la cual contiene los parámetros para la conexión a MongoDB (Esta sección debe contener mínimamente los parámetros indicados en la interface `IMongoDbSettings`, y por defecto tiene el valor "MongoDbSettings").
+> - ***addServiceHealthCheck***: De tipo `bool`, y nos sirve para indicar si se desea crear/asignar el HealthCheck para el Servicio base (Por defecto está en TRUE).
+> - ***addMongoDbHealthCheck***: De tipo `bool`, y nos sirve para indicar se se desea crear/asignar el HealthCheck para la BD de MongoDB (Por defecto está en TRUE).
+> - ***mongoDbHealthCheckTimeout***: De tipo `double`, y nos sirve para configurar el tiempo de espera para la respuesta del HealthCheck de MongoDB (Por defecto está en 3 segundos).
+> - ***configSectionName***: De tipo `string`, y lo utilizaremos para indicar el nombre de tiene la sección en el archivo de configuración "appsettings.json", la cual contiene los parámetros para la conexión a MongoDB (Esta sección debe contener mínimamente los parámetros indicados en la interface `IMongoDbSettings`, y por defecto tiene el valor "MongoDbSettings").
 
 - [x]  Haciendo el llamado al método `AddMongoDbExtensions<T>()` estamos creando también la colección para almacenar los datos, tomando para su nombre el valor de la llave *"CollectionName"* de la sección *"MongoDbSettings"* del archivo de configuración *"appsettings.json"*. Esta colección tendrá la estructura definida en la clase que se pase como parámetro `<T>` en el método, que para el ejemplo de arriba, sería `UserEntity` (Esta clase debe implementar la interface `IEntity`).
 
 - [x]  Para ejecutar el CRUD de la colección definida previamente, debemos apoyarnos de la **DI (Dependency Injection)**, para obtener en el constructor de nuestro Controlador, la instancia *Singleton* del repositorio, y ya con éste, hacer el llamado a los métodos asíncronos `GetAllAsync()`, `GetAsync()`, `CreateAsync()`, `UpdateAsync()`, y `RemoveAsync()`.
 
 ```
-public UsersController( IRepository<UsersEntity> usersRepository ): ControllerBase { ... }
+public UsersController( IRepository<UsersEntity> usersRepository ): ControllerBase
+{ ... }
 ```
 
-### ¿Cómo puedo configurar en el Servicio la Autenticación y Autorización con [**Bearer Tokens - JWT**](https://jwt.io/introduction)?
+### ¿Cómo configuro la Autenticación y Autorización con [**Bearer Tokens - JWT**](https://jwt.io/introduction)?
 - [x]  Incluimos el *namespace* **Jubatus.WebApi.Extensions** en el *Program.cs*.
 
 ```
@@ -80,14 +81,15 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddBearerJwtExtensions()` tiene un parámetro, el cual tiene un valor por defecto, y es el siguiente:
-> - configSectionName: De tipo `string`, y lo utilizaremos para indicar el nombre que tiene la sección en el archivo de configuración *"appsettings.json"*, en la cual están los parámetros para el Bearer JWT (Esta sección debe contener mínimamente los parámetros indicados en la interface `IJwtSettings`, y por defecto tiene el valor "JwtSettings").
+> - ***configSectionName***: De tipo `string`, y lo utilizaremos para indicar el nombre que tiene la sección en el archivo de configuración *"appsettings.json"*, en la cual están los parámetros para el Bearer JWT (Esta sección debe contener mínimamente los parámetros indicados en la interface `IJwtSettings`, y por defecto tiene el valor "JwtSettings").
 
 - [x]  Para la autenticación del usuario que está solicitando Bearer Tokens, nos podemos apoyar del método estático `GenerateBearerToken()` de la clase `Toolbox`. Este método requiere que se suministren los datos del usuario en una clase que implemente la interface `ICypherModel`, y adicional los demás parámetros.
 
 > [!IMPORTANT]
 > Para que el método `GenerateBearerToken()` retorne exitosamente un Bearer Token, es necesario que el Usuario y la Contraseña suministrados en el parámero `userData`, correspondan con los datos almacenados en la sección "JwtSettings" del archivo de configuración *"appsettings.json"*, y son los siguientes:
-> - AuthUser: Usuario autorizado para solicitar Bearer Tokens.
-> - AuthPass: Contraseña del usuario autorizado para solicitar Bearer Tokens (Para cifrar esta contraseña antes de guardarla, se puede apoyar de la extensión `EncryptUserPassword()`de la clase que implemente la interface `ICypherModel`).
+> - ***AuthUser***: Usuario autorizado para solicitar Bearer Tokens.
+> - ***AuthPass***: Contraseña del usuario autorizado para solicitar Bearer Tokens (Para cifrar esta contraseña antes de guardarla, se puede apoyar de la extensión `EncryptUserPassword()`de la clase que implemente la interface `ICypherModel`).
+>
 > Se debe tener en cuenta que a cada uno de los controladores que requieran esta autorización deben tener asignado el atributo `[Authorize]` y esto aplicaría para cada uno de los Endpoints definidos allí, a menos que tengan el atributo `[AllowAnonymous]`, como lo indica el siguiente ejemplo:
 
 ```
@@ -97,11 +99,12 @@ public UsersController( IRepository<UsersEntity> usersRepository ): ControllerBa
     ... 
 
     [AllowAnonymous]
-    public async Task<ActionResult> AuthenticateAsync( [FromBody] AuthUserDto authUser ) { ... }
+    public async Task<ActionResult> AuthenticateAsync( [FromBody] AuthUserDto authUser )
+    { ... }
 }
 ```
 
-### ¿Cómo puede implementar en mi Servicio un [**RateLimiter**](https://learn.microsoft.com/en-us/dotnet/api/system.threading.ratelimiting.ratelimiter?view=aspnetcore-8.0) básico (fixed)?
+### ¿Cómo implemento en mi Servicio un [**RateLimiter**](https://learn.microsoft.com/en-us/dotnet/api/system.threading.ratelimiting.ratelimiter?view=aspnetcore-8.0) básico (fixed)?
 - [x]  Incluimos el *namespace* **Jubatus.WebApi.Extensions** en el *Program.cs*.
 
 ```
@@ -120,18 +123,20 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddFixedRateLimiter()` tiene varios parámetros con valores por defecto, y son los siguientes:
-> - permitLimit: De tipo `int`, y nos sirve para indicar el número máximo de request simultáneos (Por defecto tiene el valor 10).
-> - secondsTimeout: De tipo `double`, y nos sirve para indicar el tiempo máximo (en segundos) de cada request (Por defecto tiene el valor 5).
-> - processingOrder: De tipo `QueueProcessingOrder`, y nos sirve indicar el orden de prioridad cuando se tiene pocos recursos en el Sistema (Por defecto tiene el valor `QueueProcessingOrder.OldestFirst`).
-> - queueLimit: De tipo `int`, y lo utilizaremos para indicar el número máximo de peticiones en cola (Por defecto tiene el valor 2). 
+> - ***permitLimit***: De tipo `int`, y nos sirve para indicar el número máximo de request simultáneos (Por defecto tiene el valor 10).
+> - ***secondsTimeout***: De tipo `double`, y nos sirve para indicar el tiempo máximo (en segundos) de cada request (Por defecto tiene el valor 5).
+> - ***processingOrder***: De tipo `QueueProcessingOrder`, y nos sirve para indicar el orden de prioridad cuando se tiene pocos recursos en el Sistema (Por defecto tiene el valor `QueueProcessingOrder.OldestFirst`).
+> - ***queueLimit***: De tipo `int`, y lo utilizaremos para indicar el número máximo de peticiones en cola (Por defecto tiene el valor 2).
+>
 > Para que esta característica tenga efecto en nuestras APIs, debemos incluir el atributo `[EnableRateLimiting( "fixed" )]`, en cada uno de los controladores, como se indica a continuación.
 
 ```
 [EnableRateLimiting( "fixed" )]
-public UsersController( IRepository<UsersEntity> usersRepository ): ControllerBase { ... }
+public UsersController( IRepository<UsersEntity> usersRepository ): ControllerBase
+{ ... }
 ```
 
-### ¿Cómo le puedo implementar el [**Versionamiento a mis APIs**](https://weblogs.asp.net/ricardoperes/asp-net-core-api-versioning)?
+### ¿Cómo le puedo aplicar el [**Versionamiento**](https://weblogs.asp.net/ricardoperes/asp-net-core-api-versioning) a mis APIs?
 - [x]  Incluimos el *namespace* **Jubatus.WebApi.Extensions** en el *Program.cs*.
 
 ```
@@ -150,10 +155,11 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddUrlAndHeaderApiVersioning()` también tiene varios parámetros con valores por defecto, y son los siguientes:
-> - majorVer: De tipo `int`, y aquí estamos definiendo la versión mayor por defecto (Por defecto tiene el valor 1).
-> - minorVer: De tipo `int?`, para indicar la versión menor por defecto (Por defecto tiene el valor null).
-> - status: De tipo `string?`, y aquí podemos incluir un estado adicional a la versión (Por defecto tiene el valor null).
-> En el controlador de nuestra API, y en cada uno de los Endpoints de ella, debemos especificar las versiones a través de atributos, como se muestra a continuación:
+> - ***majorVer***: De tipo `int`, y aquí estamos definiendo la versión mayor por defecto (Por defecto tiene el valor 1).
+> - ***minorVer***: De tipo `int?`, para indicar la versión menor por defecto (Por defecto tiene el valor `null`).
+> - ***status***: De tipo `string?`, y aquí podemos incluir un estado adicional a la versión (Por defecto tiene el valor `null`).
+>
+> En el controlador de nuestra API, y en cada uno de los Endpoints en el, debemos especificar las versiones a través de atributos, como se muestra a continuación:
 
 ```
 [ApiVersion( 1.0 )]
@@ -162,9 +168,32 @@ public UsersController( IRepository<UsersEntity> usersRepository ): ControllerBa
     ... 
 
     [MapToApiVersion( 1.0 )]
-    public async Task<ActionResult> AuthenticateAsync( [FromBody] AuthUserDto authUser ) { ... }
+    public async Task<ActionResult> AuthenticateAsync( [FromBody] AuthUserDto authUser )
+    { ... }
 }
 ```
+
+### ¿Cómo mapeo los HealthChecks, el RateLimiter, y/o Autenticación a mi Servicio?
+Para completar/terminar la configuración de las funcionalidades adicionadas al Servicio, descritas en la parte de arriba, es necesario que ejecutemos el método `BuildWebApp()` de la misma clase `WebApiConfig`, como se indica a continuación:
+
+```
+[...]
+var builder = WebApplication.CreateBuilder( args );
+[...]
+var webApiMgr = new WebApiConfig( builder )
+    .AddMongoDbExtensions<UsersEntity>()
+    .AddBearerJwtExtensions()
+    .AddFixedRateLimiter()
+    .AddUrlAndHeaderApiVersioning();
+
+var app = webApiMgr.BuildWebApp( "api/v{v:apiVersion}/users/health/live", "api/v{v:apiVersion}/users/health/ready" );
+[...]
+```
+
+> [!IMPORTANT]
+> El método `BuildWebApp()` también tiene varios parámetros con valores por defecto, y son los siguientes:
+> - ***serviceHealthCheckEndpoint***: De tipo `string?`, y aquí debemos suministrar el Endpoint que usaremos para chequear la disponibilidad del Servicio (Por defecto tiene el valor `null`, y en ese caso no quedaría habillitado el HealthCheck).
+> - ***mongoHealthCheckEndpoint***: De tipo `string?`, y en el que debemos suministrar el Endpoint definido para validar la disponibilidad de la BD de MongoDB (Por defecto tiene el valor `null`, y en ese caso no quedaría habilitado el HealthCheck).
 
 ## Menciones y agradecimientos:
 
@@ -196,4 +225,4 @@ public UsersController( IRepository<UsersEntity> usersRepository ): ControllerBa
 
 [**YouTube**](https://www.youtube.com/@hectorgomez-backend-dev/featured) -- 
 [**LinkedIn**](https://www.linkedin.com/in/hectorgomez-backend-dev/) -- 
-[**GitHub**](https://github.com/MoonDoDev/JubatusCommon)
+[**GitHub**](https://github.com/MoonDoDev/Jubatus.WebApi.Extensions)
