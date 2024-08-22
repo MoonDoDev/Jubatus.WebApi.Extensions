@@ -5,8 +5,8 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Jubatus.WebApi.Extensions</RootNamespace>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.1.17</Version>
-        <Description>Colección de Extensiones para Proyectos .NET 8</Description>
+        <Version>1.2.29</Version>
+        <Description>Colección de extensiones para WebApis .NET 8</Description>
         <Copyright>Hector Gomez</Copyright>
         <Company>Hector Gomez</Company>
         <PackageId>Jubatus.WebApi.Extensions</PackageId>
@@ -14,7 +14,7 @@
         <GenerateDocumentationFile>False</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/moondodev/jubatus-webapi-extensions.git</RepositoryUrl>
-        <PackageTags>MongoDB;Serilog;BearerToken;Jwt</PackageTags>
+        <PackageTags>MongoDB;Serilog;BearerToken;Jwt;RateLimiter;HealthChecks;ApiVersioning</PackageTags>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
         <!-- Configure code analysis. -->

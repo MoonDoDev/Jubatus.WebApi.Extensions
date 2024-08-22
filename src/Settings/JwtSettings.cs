@@ -4,51 +4,51 @@ using Destructurama.Attributed;
 /// <summary>
 /// 
 /// </summary>
-public interface IJwtSettings
+public sealed class JwtSettings: IJwtSettings
 {
     /// <summary>
     /// 
     /// </summary>
     [NotLogged]
-    string? JwtKey { get; set; }
+    public string? JwtKey { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? JwtIssuer { get; set; }
+    public string? JwtIssuer { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? JwtAudience { get; set; }
+    public string? JwtAudience { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? ValidateIssuer { get; set; }
+    public string? ValidateIssuer { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? ValidateAudience { get; set; }
+    public string? ValidateAudience { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? ValidateLifetime { get; set; }
+    public string? ValidateLifetime { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? ValidateIssuerSigningKey { get; set; }
+    public string? ValidateIssuerSigningKey { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? AuthUser { get; set; }
+    public string? AuthUser { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string? AuthPass { get; set; }
+    public string? AuthPass { get; set; }
 }
