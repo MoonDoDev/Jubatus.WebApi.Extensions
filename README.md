@@ -26,7 +26,7 @@ Este paquete es una colección de funcionalidades, que por ahora permitirá, a t
 Abrimos una Terminal en nuestro ambiente de desarrollo de Visual Studio, y nos ubicamos en el directorio donde se encuentra el archivo del proyecto '*.csproj', y allí ejecutamos el siguiente comando:
 
 ```
-dotnet add package Jubatus.WebApi.Extensions --version 1.2.29
+dotnet add package Jubatus.WebApi.Extensions --version 1.2.31
 ```
 
 ### ¿Cómo creo una instancia *Singleton* de [**MongoDB**](https://www.mongodb.com) y una colección en ella para almacenar mis datos?
@@ -48,10 +48,9 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddMongoDbExtensions<T>()` tiene varios parámetros, pero todos con valores por defecto, y son los siguientes:
-> - ***addServiceHealthCheck***: De tipo `bool`, y nos sirve para indicar si se desea crear/asignar el HealthCheck para el Servicio base (Por defecto está en TRUE).
-> - ***addMongoDbHealthCheck***: De tipo `bool`, y nos sirve para indicar se se desea crear/asignar el HealthCheck para la BD de MongoDB (Por defecto está en TRUE).
-> - ***mongoDbHealthCheckTimeout***: De tipo `double`, y nos sirve para configurar el tiempo de espera para la respuesta del HealthCheck de MongoDB (Por defecto está en 3 segundos).
-> - ***configSectionName***: De tipo `string`, y lo utilizaremos para indicar el nombre de tiene la sección en el archivo de configuración "appsettings.json", la cual contiene los parámetros para la conexión a MongoDB (Esta sección debe contener mínimamente los parámetros indicados en la interface `IMongoDbSettings`, y por defecto tiene el valor "MongoDbSettings").
+> - `addMongoDbHealthCheck`: De tipo `bool`, y nos sirve para indicar se se desea crear/asignar el HealthCheck para la BD de MongoDB (Por defecto está en TRUE).
+> - `mongoDbHealthCheckTimeout`: De tipo `double`, y nos sirve para configurar el tiempo de espera para la respuesta del HealthCheck de MongoDB (Por defecto está en 3 segundos).
+> - `configSectionName`: De tipo `string`, y lo utilizaremos para indicar el nombre de tiene la sección en el archivo de configuración "appsettings.json", la cual contiene los parámetros para la conexión a MongoDB (Esta sección debe contener mínimamente los parámetros indicados en la interface `IMongoDbSettings`, y por defecto tiene el valor "MongoDbSettings").
 
 - [x]  Haciendo el llamado al método `AddMongoDbExtensions<T>()` estamos creando también la colección para almacenar los datos, tomando para su nombre el valor de la llave *"CollectionName"* de la sección *"MongoDbSettings"* del archivo de configuración *"appsettings.json"*. Esta colección tendrá la estructura definida en la clase que se pase como parámetro `<T>` en el método, que para el ejemplo de arriba, sería `UserEntity` (Esta clase debe implementar la interface `IEntity`).
 
@@ -81,14 +80,14 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddBearerJwtExtensions()` tiene un parámetro, el cual tiene un valor por defecto, y es el siguiente:
-> - ***configSectionName***: De tipo `string`, y lo utilizaremos para indicar el nombre que tiene la sección en el archivo de configuración *"appsettings.json"*, en la cual están los parámetros para el Bearer JWT (Esta sección debe contener mínimamente los parámetros indicados en la interface `IJwtSettings`, y por defecto tiene el valor "JwtSettings").
+> - `configSectionName`: De tipo `string`, y lo utilizaremos para indicar el nombre que tiene la sección en el archivo de configuración *"appsettings.json"*, en la cual están los parámetros para el Bearer JWT (Esta sección debe contener mínimamente los parámetros indicados en la interface `IJwtSettings`, y por defecto tiene el valor "JwtSettings").
 
 - [x]  Para la autenticación del usuario que está solicitando Bearer Tokens, nos podemos apoyar del método estático `GenerateBearerToken()` de la clase `Toolbox`. Este método requiere que se suministren los datos del usuario en una clase que implemente la interface `ICypherModel`, y adicional los demás parámetros.
 
 > [!IMPORTANT]
 > Para que el método `GenerateBearerToken()` retorne exitosamente un Bearer Token, es necesario que el Usuario y la Contraseña suministrados en el parámero `userData`, correspondan con los datos almacenados en la sección "JwtSettings" del archivo de configuración *"appsettings.json"*, y son los siguientes:
-> - ***AuthUser***: Usuario autorizado para solicitar Bearer Tokens.
-> - ***AuthPass***: Contraseña del usuario autorizado para solicitar Bearer Tokens (Para cifrar esta contraseña antes de guardarla, se puede apoyar de la extensión `EncryptUserPassword()`de la clase que implemente la interface `ICypherModel`).
+> - `AuthUser`: Usuario autorizado para solicitar Bearer Tokens.
+> - `AuthPass`: Contraseña del usuario autorizado para solicitar Bearer Tokens (Para cifrar esta contraseña antes de guardarla, se puede apoyar de la extensión `EncryptUserPassword()`de la clase que implemente la interface `ICypherModel`).
 >
 > Se debe tener en cuenta que a cada uno de los controladores que requieran esta autorización deben tener asignado el atributo `[Authorize]` y esto aplicaría para cada uno de los Endpoints definidos allí, a menos que tengan el atributo `[AllowAnonymous]`, como lo indica el siguiente ejemplo:
 
@@ -123,10 +122,10 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddFixedRateLimiter()` tiene varios parámetros con valores por defecto, y son los siguientes:
-> - ***permitLimit***: De tipo `int`, y nos sirve para indicar el número máximo de request simultáneos (Por defecto tiene el valor 10).
-> - ***secondsTimeout***: De tipo `double`, y nos sirve para indicar el tiempo máximo (en segundos) de cada request (Por defecto tiene el valor 5).
-> - ***processingOrder***: De tipo `QueueProcessingOrder`, y nos sirve para indicar el orden de prioridad cuando se tiene pocos recursos en el Sistema (Por defecto tiene el valor `QueueProcessingOrder.OldestFirst`).
-> - ***queueLimit***: De tipo `int`, y lo utilizaremos para indicar el número máximo de peticiones en cola (Por defecto tiene el valor 2).
+> - `permitLimit`: De tipo `int`, y nos sirve para indicar el número máximo de request simultáneos (Por defecto tiene el valor 10).
+> - `secondsTimeout`: De tipo `double`, y nos sirve para indicar el tiempo máximo (en segundos) de cada request (Por defecto tiene el valor 5).
+> - `processingOrder`: De tipo `QueueProcessingOrder`, y nos sirve para indicar el orden de prioridad cuando se tiene pocos recursos en el Sistema (Por defecto tiene el valor `QueueProcessingOrder.OldestFirst`).
+> - `queueLimit`: De tipo `int`, y lo utilizaremos para indicar el número máximo de peticiones en cola (Por defecto tiene el valor 2).
 >
 > Para que esta característica tenga efecto en nuestras APIs, debemos incluir el atributo `[EnableRateLimiting( "fixed" )]`, en cada uno de los controladores, como se indica a continuación.
 
@@ -155,9 +154,9 @@ var webApiMgr = new WebApiConfig( builder )
 
 > [!IMPORTANT]
 > El método `AddUrlAndHeaderApiVersioning()` también tiene varios parámetros con valores por defecto, y son los siguientes:
-> - ***majorVer***: De tipo `int`, y aquí estamos definiendo la versión mayor por defecto (Por defecto tiene el valor 1).
-> - ***minorVer***: De tipo `int?`, para indicar la versión menor por defecto (Por defecto tiene el valor `null`).
-> - ***status***: De tipo `string?`, y aquí podemos incluir un estado adicional a la versión (Por defecto tiene el valor `null`).
+> - `majorVer`: De tipo `int`, y aquí estamos definiendo la versión mayor por defecto (Por defecto tiene el valor 1).
+> - `minorVer`: De tipo `int?`, para indicar la versión menor por defecto (Por defecto tiene el valor `null`).
+> - `status`: De tipo `string?`, y aquí podemos incluir un estado adicional a la versión (Por defecto tiene el valor `null`).
 >
 > En el controlador de nuestra API, y en cada uno de los Endpoints en el, debemos especificar las versiones a través de atributos, como se muestra a continuación:
 
@@ -192,8 +191,8 @@ var app = webApiMgr.BuildWebApp( "api/v{v:apiVersion}/users/health/live", "api/v
 
 > [!IMPORTANT]
 > El método `BuildWebApp()` también tiene varios parámetros con valores por defecto, y son los siguientes:
-> - ***serviceHealthCheckEndpoint***: De tipo `string?`, y aquí debemos suministrar el Endpoint que usaremos para chequear la disponibilidad del Servicio (Por defecto tiene el valor `null`, y en ese caso no quedaría habillitado el HealthCheck).
-> - ***mongoHealthCheckEndpoint***: De tipo `string?`, y en el que debemos suministrar el Endpoint definido para validar la disponibilidad de la BD de MongoDB (Por defecto tiene el valor `null`, y en ese caso no quedaría habilitado el HealthCheck).
+> - `serviceHealthCheckEndpoint`: De tipo `string?`, y aquí debemos suministrar el Endpoint que usaremos para chequear la disponibilidad del Servicio (Por defecto tiene el valor `null`, y en ese caso no quedaría habillitado el HealthCheck).
+> - `mongoHealthCheckEndpoint`: De tipo `string?`, y en el que debemos suministrar el Endpoint definido para validar la disponibilidad de la BD de MongoDB (Por defecto tiene el valor `null`, y en ese caso no quedaría habilitado el HealthCheck).
 
 ## Menciones y agradecimientos:
 

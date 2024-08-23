@@ -52,6 +52,7 @@ public sealed class WebApiConfig
 
         /* Para evitar que el comiplador nos elimine el sufijo "Async" de los métodos */
         _appBuilder.Services.AddControllers( options => options.SuppressAsyncSuffixInActionNames = false );
+        _appBuilder.Services.AddHealthChecks();
     }
 
     #endregion
@@ -61,13 +62,11 @@ public sealed class WebApiConfig
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="addServiceHealthCheck"></param>
     /// <param name="addMongoDbHealthCheck"></param>
     /// <param name="mongoDbHealthCheckTimeout"></param>
     /// <param name="configSectionName"></param>
     /// <returns></returns>
     public WebApiConfig AddMongoDbExtensions<T>(
-        bool addServiceHealthCheck = true,
         bool addMongoDbHealthCheck = true,
         double mongoDbHealthCheckTimeout = 3,
         string configSectionName = "MongoDbSettings" ) where T : IEntity
@@ -83,11 +82,6 @@ public sealed class WebApiConfig
             var mongoClient = new MongoClient( mongoOptions.ConnectionString! );
             return mongoClient.GetDatabase( mongoOptions.ServiceName );
         } );
-
-        if( addServiceHealthCheck )
-        {
-            _appBuilder.Services.AddHealthChecks();
-        }
 
         if( addMongoDbHealthCheck )
         {

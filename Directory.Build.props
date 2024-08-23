@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Jubatus.WebApi.Extensions</RootNamespace>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.2.29</Version>
+        <Version>1.2.31</Version>
         <Description>Colección de extensiones para WebApis .NET 8</Description>
         <Copyright>Hector Gomez</Copyright>
         <Company>Hector Gomez</Company>
