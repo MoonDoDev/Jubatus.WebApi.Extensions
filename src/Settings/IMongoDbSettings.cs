@@ -1,5 +1,4 @@
 namespace Jubatus.WebApi.Extensions.Settings;
-using Destructurama.Attributed;
 
 /// <summary>
 /// 
@@ -12,13 +11,11 @@ public interface IMongoDbSettings
 
     string? UserName { get; set; }
 
-    [NotLogged]
     string? UserPass { get; set; }
 
     string? ServiceName { get; set; }
 
     string? CollectionName { get; set; }
 
-    [NotLogged]
     string ConnectionString { get; }
 }

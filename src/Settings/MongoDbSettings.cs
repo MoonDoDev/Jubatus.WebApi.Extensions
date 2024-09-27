@@ -1,5 +1,4 @@
 namespace Jubatus.WebApi.Extensions.Settings;
-using Destructurama.Attributed;
 
 /// <summary>
 /// 
@@ -12,13 +11,11 @@ public sealed class MongoDbSettings: IMongoDbSettings
 
     public string? UserName { get; set; }
 
-    [NotLogged]
     public string? UserPass { get; set; }
 
     public string? ServiceName { get; set; }
 
     public string? CollectionName { get; set; }
 
-    [NotLogged]
     public string ConnectionString => $"mongodb://{UserName}:{UserPass}@{Host}:{Port}";
 }

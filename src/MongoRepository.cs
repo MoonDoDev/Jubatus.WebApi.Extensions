@@ -1,4 +1,5 @@
 namespace Jubatus.WebApi.Extensions;
+
 using Jubatus.WebApi.Extensions.Models;
 using System.Linq.Expressions;
 using MongoDB.Driver.Linq;
@@ -55,7 +56,7 @@ public class MongoRepository<T>: IRepository<T> where T : IEntity
         var record = await _dbCollection.Find( filter ).FirstOrDefaultAsync().ConfigureAwait( false );
 
         if( record is null )
-            return Result.Fail<T>( "GetAsync( record id not found )" );
+            return Result.Fail<T>( $"GetAsync( The record with id: {id} was not found )" );
 
         return record;
     }
@@ -71,7 +72,7 @@ public class MongoRepository<T>: IRepository<T> where T : IEntity
         var record = await _dbCollection.Find( filter ).FirstOrDefaultAsync().ConfigureAwait( false );
 
         if( record is null )
-            return Result.Fail<T>( "GetAsync( filter - record not found )" );
+            return Result.Fail<T>( "GetAsync( The search didn't generate any results )" );
 
         return record;
     }
@@ -104,7 +105,7 @@ public class MongoRepository<T>: IRepository<T> where T : IEntity
         if( result.ModifiedCount > 0 )
             return Result.Ok( entity );
 
-        return Result.Fail<T>( "UpdateAsync( record id not found )" );
+        return Result.Fail<T>( $"UpdateAsync( The record with id: {entity.Id} was not found )" );
     }
 
     /// <summary>
@@ -119,7 +120,7 @@ public class MongoRepository<T>: IRepository<T> where T : IEntity
         if( result.DeletedCount > 0 )
             return Result.Ok();
 
-        return Result.Fail( "RemoveAsync( record id not found )" );
+        return Result.Fail( $"RemoveAsync( The record with id: {id} was not found )" );
     }
 
     #endregion

@@ -1,4 +1,5 @@
 namespace Jubatus.WebApi.Extensions;
+
 using Jubatus.WebApi.Extensions.Models;
 using System.Linq.Expressions;
 using FluentResults;

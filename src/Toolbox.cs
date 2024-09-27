@@ -1,10 +1,9 @@
 namespace Jubatus.WebApi.Extensions;
-using Destructurama;
+
 using Jubatus.WebApi.Extensions.Models;
 using Jubatus.WebApi.Extensions.Settings;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
-using Serilog;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
@@ -13,37 +12,8 @@ using System.Security.Claims;
 /// <summary>
 /// 
 /// </summary>
-public enum LoggerMinLevel
-{
-    Verbose = 0,
-    Debug = 1,
-    Information = 2,
-    Warning = 3,
-    Error = 4,
-    Fatal = 5
-}
-
-/// <summary>
-/// 
-/// </summary>
 public static class Toolbox
 {
-    /// <summary>
-    /// Creamos una instancia del Logger de Serilog (MinimumLevel -> Debug)
-    /// NOTA: Se recomienda liberar los recursos de esta instancia, haciendo uso de la palabra reservada "using", ejemplo:
-    /// -> using Serilog.Core.Logger log = GetLogger();
-    /// </summary>
-    /// <returns></returns>
-    public static Serilog.Core.Logger GetLogger( LoggerMinLevel level ) => level switch
-    {
-        LoggerMinLevel.Verbose => new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console().Destructure.UsingAttributes().CreateLogger(),
-        LoggerMinLevel.Debug => new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().Destructure.UsingAttributes().CreateLogger(),
-        LoggerMinLevel.Information => new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().Destructure.UsingAttributes().CreateLogger(),
-        LoggerMinLevel.Warning => new LoggerConfiguration().MinimumLevel.Warning().WriteTo.Console().Destructure.UsingAttributes().CreateLogger(),
-        LoggerMinLevel.Error => new LoggerConfiguration().MinimumLevel.Error().WriteTo.Console().Destructure.UsingAttributes().CreateLogger(),
-        _ => new LoggerConfiguration().MinimumLevel.Fatal().WriteTo.Console().Destructure.UsingAttributes().CreateLogger(),
-    };
-
     /// <summary>
     /// 
     /// </summary>
@@ -120,7 +90,7 @@ public static class Toolbox
             {
                 Subject = new ClaimsIdentity(
                 [
-                    new Claim(ClaimTypes.Name, userData.AliasName??"")
+                    new Claim( ClaimTypes.Name, userData.AliasName ?? "" )
                 ] ),
                 Expires = DateTime.UtcNow.AddMinutes( 10 ),
                 SigningCredentials = new SigningCredentials( new SymmetricSecurityKey( tokenKey ), SecurityAlgorithms.HmacSha256Signature )

@@ -1,5 +1,4 @@
 namespace Jubatus.WebApi.Extensions.Settings;
-using Destructurama.Attributed;
 
 /// <summary>
 /// 
@@ -9,7 +8,6 @@ public interface IJwtSettings
     /// <summary>
     /// 
     /// </summary>
-    [NotLogged]
     string? JwtKey { get; set; }
 
     /// <summary>

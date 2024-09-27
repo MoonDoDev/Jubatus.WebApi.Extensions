@@ -22,11 +22,24 @@ Este paquete es una colección de funcionalidades, que por ahora permitirá, a t
   | WebApiConfig       // Clase principal que crea y asigna las extensiones.
 ```
 
+## ¿Qué novedades y cambios tiene esta versión?
+Esta versión 1.3.36 tiene los siguientes cambios:
+
+- [x]  Se creó la clase estática `FastLogger` la cual contiene delegados de `LoggerMessage` para reportar al Logger de una manera más eficiente, y para cada uno de sus niveles: ( `LogTrace()`, `LogDebug()`, `LogInfo()`, `LogWarning()`, `LogError()`, y `LogCritical()` ). La visibilidad de los mensajes dependerá de la configuración que se tenga en **"Logging:LogLevel"** en el archivo **"appsettings.json"**.
+
+- [x]  Se actualizó la referencia al paquete de **MongoDD.Driver** por la versión 2.27.0.
+
+- [x]  Se eliminó el método estático `GetLogger()` de la clase estática `Toolbox` para darle paso a la implementación de `FastLogger`.
+
+- [x]  Se eliminaron las referencias de los paquetes de **Serilog.AspNetCore** y **Destructurama.Attributed**, dado que ya no son necesarias por la eliminación del método `GetLogger()`.
+
+- [x]  Se implementó el manejo Global de las Excepciones directamente en el middleware, haciendo uso de la interface `IExceptionHandler`.
+
 ## ¿Cómo adiciono el paquete al proyecto para usarlo?
 Abrimos una Terminal en nuestro ambiente de desarrollo de Visual Studio, y nos ubicamos en el directorio donde se encuentra el archivo del proyecto '*.csproj', y allí ejecutamos el siguiente comando:
 
 ```
-dotnet add package Jubatus.WebApi.Extensions --version 1.2.31
+dotnet add package Jubatus.WebApi.Extensions --version 1.3.36
 ```
 
 ### ¿Cómo creo una instancia *Singleton* de [**MongoDB**](https://www.mongodb.com) y una colección en ella para almacenar mis datos?
@@ -213,10 +226,8 @@ var app = webApiMgr.BuildWebApp( "api/v{v:apiVersion}/users/health/live", "api/v
 "Microsoft.Extensions.Configuration.Binder" Version="8.0.2"
 "Microsoft.Extensions.DependencyInjection" Version="8.0.0"
 "Microsoft.AspNetCore.OpenApi" Version="8.0.4"
-"MongoDB.Driver" Version="2.25.0"
+"MongoDB.Driver" Version="2.27.0"
 "MongoDB.Driver.Linq.AsyncEnumerable" Version="2.15.4"
-"Serilog.AspNetCore" Version="8.0.2"
-"Destructurama.Attributed" Version="4.0.0"
 "Swashbuckle.AspNetCore" Version="6.7.0"
 ```
 
