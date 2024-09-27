@@ -27,7 +27,7 @@ public static class FastLogger
     /// Logger for Debug Messages
     /// </summary>
     public static readonly Action<ILogger, string, Exception?> LogDebug = LoggerMessage.Define<string>(
-        logLevel: LogLevel.Trace,
+        logLevel: LogLevel.Debug,
         eventId: new EventId( id: 101, name: nameof( LogDebug ) ),
         formatString: "{Message}" );
 

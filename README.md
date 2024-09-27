@@ -6,6 +6,8 @@ Este paquete es una colección de funcionalidades, que por ahora permitirá, a t
 
 ```
   Jubatus.WebApi.Extensions \
+  | Exceptions \
+    | GlobalExceptionManager  // Manejo de excepciones desde el Middleware.
   | Models \
     | CypherModel      // Modelo para el manejo de usuarios y su contraseña.
     | ICypherModel     // Interface para definir el modelo de usuarios.
@@ -15,7 +17,8 @@ Este paquete es una colección de funcionalidades, que por ahora permitirá, a t
     | IJwtSettings     // Interface para la configuración del Bearer Token.
     | IMongoDbSettings // Interface para la configuración de MongoDB.
     | JwtSettings      // Clase con la estructura de configuración del JWT.
-    | MongoDbSettings  // Clase con la estructura de configuración del MongoDB
+    | MongoDbSettings  // Clase con la estructura de configuración del MongoDB.
+  | FastLogger         // Implementación de los delegados de LoggerMessage.
   | IRepository        // Interface para la implementación del CRUD.
   | MongoRepository    // Implementación del CRUD con MongoDB.
   | Toolbox            // Implementación de métodos utilitarios.
@@ -23,7 +26,7 @@ Este paquete es una colección de funcionalidades, que por ahora permitirá, a t
 ```
 
 ## ¿Qué novedades y cambios tiene esta versión?
-Esta versión 1.3.36 tiene los siguientes cambios:
+Esta versión 1.3.37 tiene los siguientes cambios:
 
 - [x]  Se creó la clase estática `FastLogger` la cual contiene delegados de `LoggerMessage` para reportar al Logger de una manera más eficiente, y para cada uno de sus niveles: ( `LogTrace()`, `LogDebug()`, `LogInfo()`, `LogWarning()`, `LogError()`, y `LogCritical()` ). La visibilidad de los mensajes dependerá de la configuración que se tenga en **"Logging:LogLevel"** en el archivo **"appsettings.json"**.
 
@@ -39,7 +42,7 @@ Esta versión 1.3.36 tiene los siguientes cambios:
 Abrimos una Terminal en nuestro ambiente de desarrollo de Visual Studio, y nos ubicamos en el directorio donde se encuentra el archivo del proyecto '*.csproj', y allí ejecutamos el siguiente comando:
 
 ```
-dotnet add package Jubatus.WebApi.Extensions --version 1.3.36
+dotnet add package Jubatus.WebApi.Extensions --version 1.3.37
 ```
 
 ### ¿Cómo creo una instancia *Singleton* de [**MongoDB**](https://www.mongodb.com) y una colección en ella para almacenar mis datos?
