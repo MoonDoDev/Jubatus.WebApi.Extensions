@@ -1,24 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Jubatus.WebApi.Extensions</PackageId>
+        <Version>1.4.41</Version>
+        <PackageTags>MongoDB;WebApi;FastLogger;Docker;HealthCheck;Bearer;Token;Jwt;RateLimiter;ApiVersioning;FluentResults</PackageTags>
+        <Description>
+            Este paquete es una colección de funcionalidades, que por ahora permitirá, a través de Extensions,
+            Interfaces y DI la inclusión de las siguientes características a un proyecto de tipo WebApi:
+            - Uso de repositorios con MongoDB.
+            - Implementación de FastLogger.
+            - Contenerización con Docker.
+            - Inclusión de HealthChecks para la validación del Servicio y la BD.
+            - Implementacion de Autenticación y Autorización con JWT Bearer Tokens.
+            - Implementación de RateLimiter y el versionamiento de las Apis.
+            - Uso de FluentResults para minimizar el re-lanzamiento de Excepciones.
+        </Description>
+        <Authors>Hector Gomez</Authors>
+        <Company>MoonDoDev</Company>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-        <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="8.0.1" />
+        <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="9.0.0" />
         <PackageReference Include="FluentResults" Version="3.16.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
-        <PackageReference Include="MongoDB.Driver" Version="2.27.0" />
-        <PackageReference Include="MongoDB.Driver.Linq.AsyncEnumerable" Version="2.15.4" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
+        <PackageReference Include="MongoDB.Driver" Version="3.2.1" />
+        <PackageReference Include="MongoDB.Driver.Core" Version="2.30.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Update="SonarAnalyzer.CSharp" Version="10.7.0.110445" />
+    </ItemGroup>
 </Project>

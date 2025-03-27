@@ -1,5 +1,3 @@
-namespace Jubatus.WebApi.Extensions;
-
 using Jubatus.WebApi.Extensions.Models;
 using Jubatus.WebApi.Extensions.Settings;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +6,8 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+
+namespace Jubatus.WebApi.Extensions;
 
 /// <summary>
 /// 
@@ -32,32 +32,30 @@ public static class Toolbox
         var jwtOptions = new JwtSettings();
         configuration.GetSection( configSectionName ).Bind( jwtOptions );
 
-        var iv = new byte[16];
+        var iv = new byte[ 16 ];
         byte[] array;
 
-        using( var aes = Aes.Create() )
-        {
-            aes.Key = Encoding.UTF8.GetBytes( jwtOptions.JwtKey! );
-            aes.IV = iv;
+        using var aes = Aes.Create();
+        aes.Key = Encoding.UTF8.GetBytes( jwtOptions.JwtKey! );
+        aes.IV = iv;
 
 #pragma warning disable CA5401 // Do not use CreateEncryptor with non-default IV
 #pragma warning disable S3329 // Cipher Block Chaining IVs should be unpredictable
 
-            var encryptor = aes.CreateEncryptor( aes.Key, aes.IV );
+        var encryptor = aes.CreateEncryptor( aes.Key, aes.IV );
 
 #pragma warning restore S3329 // Cipher Block Chaining IVs should be unpredictable
 #pragma warning restore CA5401 // Do not use CreateEncryptor with non-default IV
 
-            using MemoryStream memoryStream = new();
-            using CryptoStream cryptoStream = new( ( Stream ) memoryStream, encryptor, CryptoStreamMode.Write );
-            using( StreamWriter streamWriter = new( ( Stream ) cryptoStream ) )
-            {
-                streamWriter.WriteAsync( cypherData.UserPass );
-            }
+        using MemoryStream memoryStream = new();
+        using CryptoStream cryptoStream = new( ( Stream ) memoryStream, encryptor, CryptoStreamMode.Write );
 
-            array = memoryStream.ToArray();
+        using( StreamWriter streamWriter = new( ( Stream ) cryptoStream ) )
+        {
+            streamWriter.WriteAsync( cypherData.UserPass );
         }
 
+        array = memoryStream.ToArray();
         return Convert.ToBase64String( array );
     }
 

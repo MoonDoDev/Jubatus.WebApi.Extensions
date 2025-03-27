@@ -1,12 +1,9 @@
-namespace Jubatus.WebApi.Extensions.Exceptions;
-
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
+namespace Jubatus.WebApi.Extensions.Exceptions;
 
 /// <summary>
 /// Manejador global de excepciones, el cual implementa la Interface "IExceptionHandler" 

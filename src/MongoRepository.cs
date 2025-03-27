@@ -1,10 +1,9 @@
-namespace Jubatus.WebApi.Extensions;
-
 using Jubatus.WebApi.Extensions.Models;
 using System.Linq.Expressions;
-using MongoDB.Driver.Linq;
 using MongoDB.Driver;
 using FluentResults;
+
+namespace Jubatus.WebApi.Extensions;
 
 /// <summary>
 /// 
@@ -40,9 +39,16 @@ public class MongoRepository<T>: IRepository<T> where T : IEntity
     /// </summary>
     /// <param name="filter">Criterio de búsqueda de los documentos en la colección.</param>
     /// <returns>Todos los registros de la colección que cumplan con el criterio de búsqueda.</returns>
-    public IAsyncEnumerable<T> GetAllAsync( Expression<Func<T, bool>>? filter = null )
+    public async IAsyncEnumerable<T> GetAllAsync( Expression<Func<T, bool>>? filter = null )
     {
-        return _dbCollection.Find( filter ?? _filterBuilder.Empty ).ToAsyncEnumerable();
+        var cursor = await _dbCollection.Find( filter ?? _filterBuilder.Empty ).ToCursorAsync().ConfigureAwait( false );
+        while( await cursor.MoveNextAsync().ConfigureAwait( false ) )
+        {
+            foreach( var document in cursor.Current )
+            {
+                yield return document;
+            }
+        }
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
-namespace Jubatus.WebApi.Extensions;
-
 using Microsoft.Extensions.Logging;
+
+namespace Jubatus.WebApi.Extensions;
 
 /// <summary>
 /// 

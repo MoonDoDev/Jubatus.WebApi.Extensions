@@ -1,5 +1,3 @@
-namespace Jubatus.WebApi.Extensions;
-
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -22,18 +20,27 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Http;
 using Jubatus.WebApi.Extensions.Exceptions;
 
+namespace Jubatus.WebApi.Extensions;
+
+/// <summary>
+/// 
+/// </summary>
 public sealed class WebApiConfig
 {
     #region private data
 
-    private static readonly string[] s_tags = ["ready"];
+    private static readonly string[] s_tags = [ "ready" ];
+    private readonly WebApplicationBuilder _appBuilder;
     private const string POLICY_NAME = "fixed";
     private bool _rateLimiterCreated;
-    private readonly WebApplicationBuilder _appBuilder;
 
     #endregion
     #region primary constructor
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="appBuilder"></param>
     public WebApiConfig( WebApplicationBuilder appBuilder )
     {
         ArgumentNullException.ThrowIfNull( appBuilder );
@@ -41,7 +48,7 @@ public sealed class WebApiConfig
 
         /* Cargamos la configuración de WebApi Caller */
         _appBuilder.Configuration
-            .AddJsonFile( "appsettings.json", optional: true, reloadOnChange: true )
+            .AddJsonFile( "appsettings.json", true, true )
             .AddJsonFile( $"appsettings.{_appBuilder.Environment}.json", true, true );
 
         /* Para evitar que el compilador nos elimine el sufijo "Async" de los métodos */
@@ -90,7 +97,7 @@ public sealed class WebApiConfig
         if( addMongoDbHealthCheck )
         {
             _appBuilder.Services.AddHealthChecks()
-                .AddMongoDb( mongoOptions.ConnectionString!,
+                .AddMongoDb( sp => sp.GetService<IMongoDatabase>()!,
                     name: "mongodb",
                     timeout: TimeSpan.FromSeconds( mongoDbHealthCheckTimeout ),
                     tags: s_tags );
@@ -117,18 +124,20 @@ public sealed class WebApiConfig
         var jwtOptions = new JwtSettings();
         _appBuilder.Configuration.GetSection( configSectionName ).Bind( jwtOptions );
 
-        _appBuilder.Services.AddSwaggerGen( c =>
+        _appBuilder.Services.AddSwaggerGen( genOptions =>
         {
-            c.AddSecurityDefinition( JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-            {
-                Description = "JMT Authorization header - Enter 'Bearer' space and [Token]",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = JwtBearerDefaults.AuthenticationScheme
-            } );
+            genOptions.AddSecurityDefinition(
+                JwtBearerDefaults.AuthenticationScheme,
+                new OpenApiSecurityScheme
+                {
+                    Description = "JMT Authorization header - Enter 'Bearer' space and [Token]",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme
+                } );
 
-            c.AddSecurityRequirement( new OpenApiSecurityRequirement()
+            genOptions.AddSecurityRequirement( new OpenApiSecurityRequirement()
             {
                 {
                     new OpenApiSecurityScheme
@@ -147,16 +156,16 @@ public sealed class WebApiConfig
             } );
         } );
 
-        _appBuilder.Services.AddAuthentication( auth =>
+        _appBuilder.Services.AddAuthentication( authOptions =>
         {
-            auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        } ).AddJwtBearer( o =>
+            authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        } ).AddJwtBearer( bearerOptions =>
         {
             var key = Encoding.UTF8.GetBytes( jwtOptions.JwtKey! );
 
-            o.SaveToken = true;
-            o.TokenValidationParameters = new TokenValidationParameters
+            bearerOptions.SaveToken = true;
+            bearerOptions.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = Convert.ToBoolean( jwtOptions.ValidateIssuer ),
                 ValidateAudience = Convert.ToBoolean( jwtOptions.ValidateAudience ),
@@ -191,7 +200,7 @@ public sealed class WebApiConfig
         int queueLimit = 2 )
     {
         _appBuilder.Services.AddRateLimiter( rateLimiterOptions =>
-            rateLimiterOptions.AddFixedWindowLimiter( policyName: POLICY_NAME, options =>
+            rateLimiterOptions.AddFixedWindowLimiter( POLICY_NAME, options =>
             {
                 options.PermitLimit = permitLimit;                          // A maximum of 10 requests
                 options.Window = TimeSpan.FromSeconds( secondsTimeout );    // Per 5 seconds window.
@@ -217,18 +226,20 @@ public sealed class WebApiConfig
         int? minorVer = null,
         string? status = null )
     {
-        _appBuilder.Services.AddApiVersioning( options =>
+        _appBuilder.Services.AddApiVersioning( verOptions =>
         {
-            options.DefaultApiVersion = new ApiVersion( majorVer, minorVer, status );
-            options.ReportApiVersions = true;
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.ApiVersionReader = ApiVersionReader.Combine(
+            verOptions.DefaultApiVersion = new ApiVersion( majorVer, minorVer, status );
+            verOptions.ReportApiVersions = true;
+            verOptions.AssumeDefaultVersionWhenUnspecified = true;
+
+            verOptions.ApiVersionReader = ApiVersionReader.Combine(
                 new UrlSegmentApiVersionReader(),
                 new HeaderApiVersionReader( "X-Api-Version" ) );
-        } ).AddApiExplorer( options =>
+
+        } ).AddApiExplorer( explorerOptions =>
         {
-            options.GroupNameFormat = "'v'V";
-            options.SubstituteApiVersionInUrl = true;
+            explorerOptions.GroupNameFormat = "'v'V";
+            explorerOptions.SubstituteApiVersionInUrl = true;
         } );
 
         return this;
@@ -261,7 +272,7 @@ public sealed class WebApiConfig
         {
             app.MapHealthChecks( mongoHealthCheckEndpoint, new HealthCheckOptions
             {
-                Predicate = ( check ) => check.Tags.Contains( s_tags[0] ),
+                Predicate = ( check ) => check.Tags.Contains( s_tags[ 0 ] ),
                 ResponseWriter = async ( context, report ) =>
                 {
                     var result = JsonSerializer.Serialize( new
