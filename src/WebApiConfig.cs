@@ -29,7 +29,7 @@ public sealed class WebApiConfig
 {
     #region private data
 
-    private static readonly string[] s_tags = [ "ready" ];
+    private static readonly string[] s_tags = ["ready"];
     private readonly WebApplicationBuilder _appBuilder;
     private const string POLICY_NAME = "fixed";
     private bool _rateLimiterCreated;
@@ -88,13 +88,15 @@ public sealed class WebApiConfig
         var mongoOptions = new MongoDbSettings();
         _appBuilder.Configuration.GetSection( configSectionName ).Bind( mongoOptions );
 
+        ArgumentNullException.ThrowIfNull( mongoOptions );
+
         _appBuilder.Services.AddSingleton( serviceProvider =>
         {
             var mongoClient = new MongoClient( mongoOptions.ConnectionString! );
             return mongoClient.GetDatabase( mongoOptions.ServiceName );
         } );
 
-        if( addMongoDbHealthCheck )
+        if ( addMongoDbHealthCheck )
         {
             _appBuilder.Services.AddHealthChecks()
                 .AddMongoDb( sp => sp.GetService<IMongoDatabase>()!,
@@ -123,6 +125,8 @@ public sealed class WebApiConfig
     {
         var jwtOptions = new JwtSettings();
         _appBuilder.Configuration.GetSection( configSectionName ).Bind( jwtOptions );
+
+        ArgumentNullException.ThrowIfNull( jwtOptions );
 
         _appBuilder.Services.AddSwaggerGen( genOptions =>
         {
@@ -260,7 +264,7 @@ public sealed class WebApiConfig
     {
         var app = _appBuilder.Build();
 
-        if( serviceHealthCheckEndpoint is not null )
+        if ( serviceHealthCheckEndpoint is not null )
         {
             app.MapHealthChecks( serviceHealthCheckEndpoint, new HealthCheckOptions
             {
@@ -268,11 +272,11 @@ public sealed class WebApiConfig
             } );
         }
 
-        if( mongoHealthCheckEndpoint is not null )
+        if ( mongoHealthCheckEndpoint is not null )
         {
             app.MapHealthChecks( mongoHealthCheckEndpoint, new HealthCheckOptions
             {
-                Predicate = ( check ) => check.Tags.Contains( s_tags[ 0 ] ),
+                Predicate = ( check ) => check.Tags.Contains( s_tags[0] ),
                 ResponseWriter = async ( context, report ) =>
                 {
                     var result = JsonSerializer.Serialize( new
@@ -293,7 +297,7 @@ public sealed class WebApiConfig
             } );
         }
 
-        if( _rateLimiterCreated )
+        if ( _rateLimiterCreated )
         {
             app.UseRateLimiter();
             app.MapDefaultControllerRoute().RequireRateLimiting( POLICY_NAME );

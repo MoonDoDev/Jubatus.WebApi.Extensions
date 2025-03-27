@@ -32,7 +32,7 @@ public static class Toolbox
         var jwtOptions = new JwtSettings();
         configuration.GetSection( configSectionName ).Bind( jwtOptions );
 
-        var iv = new byte[ 16 ];
+        var iv = new byte[16];
         byte[] array;
 
         using var aes = Aes.Create();
@@ -41,16 +41,14 @@ public static class Toolbox
 
 #pragma warning disable CA5401 // Do not use CreateEncryptor with non-default IV
 #pragma warning disable S3329 // Cipher Block Chaining IVs should be unpredictable
-
         var encryptor = aes.CreateEncryptor( aes.Key, aes.IV );
-
 #pragma warning restore S3329 // Cipher Block Chaining IVs should be unpredictable
 #pragma warning restore CA5401 // Do not use CreateEncryptor with non-default IV
 
         using MemoryStream memoryStream = new();
         using CryptoStream cryptoStream = new( ( Stream ) memoryStream, encryptor, CryptoStreamMode.Write );
 
-        using( StreamWriter streamWriter = new( ( Stream ) cryptoStream ) )
+        using ( StreamWriter streamWriter = new( ( Stream ) cryptoStream ) )
         {
             streamWriter.WriteAsync( cypherData.UserPass );
         }
@@ -79,7 +77,7 @@ public static class Toolbox
 
         var authPassword = userData.EncryptUserPassword( configuration, configSectionName );
 
-        if( jwtOptions.AuthUser == userData.AliasName && jwtOptions.AuthPass == authPassword )
+        if ( jwtOptions.AuthUser == userData.AliasName && jwtOptions.AuthPass == authPassword )
         {
             var tokenHandle = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.UTF8.GetBytes( jwtOptions.JwtKey! );

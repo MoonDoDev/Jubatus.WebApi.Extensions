@@ -5,10 +5,10 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Jubatus.WebApi.Extensions</RootNamespace>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.3.37</Version>
-        <Description>Colección de extensiones para WebApis .NET 8</Description>
+        <Version>1.4.41</Version>
+        <Description>Colección de extensiones para WebApis .NET 9</Description>
         <Copyright>Hector Gomez</Copyright>
-        <Company>Hector Gomez</Company>
+        <Company>MoonDoDev</Company>
         <PackageId>Jubatus.WebApi.Extensions</PackageId>
         <PackageProjectUrl>https://github.com/moondodev/jubatus-webapi-extensions</PackageProjectUrl>
         <GenerateDocumentationFile>False</GenerateDocumentationFile>
